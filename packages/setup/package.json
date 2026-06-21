@@ -1,0 +1,8 @@
+{
+  "name": "@rhi/setup",
+  "version": "0.0.1",
+  "description": "Interactive /setup slash command for RHI memory system",
+  "type": "module",
+  "license": "MIT",
+  "private": true
+}

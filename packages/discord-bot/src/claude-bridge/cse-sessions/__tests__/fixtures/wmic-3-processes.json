@@ -1,0 +1,30 @@
+[
+    {
+        "ProcessId":  8568,
+        "ParentProcessId":  5548,
+        "CreationDate":  "\/Date(1777123236876)\/",
+        "WorkingSetSize":  228409344,
+        "CommandLine":  "\"C:\\Users\\testuser\\.fnm\\node-versions\\v22.22.2\\installation\\\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe\"    remote-control --permission-mode bypassPermissions"
+    },
+    {
+        "ProcessId":  11160,
+        "ParentProcessId":  8568,
+        "CreationDate":  "\/Date(1777123240867)\/",
+        "WorkingSetSize":  320438272,
+        "CommandLine":  "C:\\Users\\testuser\\.fnm\\node-versions\\v22.22.2\\installation\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe --print --sdk-url https://api.anthropic.com/v1/code/sessions/cse_01HewnjQGi9zStJVbDsgyZC3 --session-id cse_01HewnjQGi9zStJVbDsgyZC3 --input-format stream-json --output-format stream-json --replay-user-messages --permission-mode bypassPermissions"
+    },
+    {
+        "ProcessId":  18488,
+        "ParentProcessId":  2744,
+        "CreationDate":  "\/Date(1777193270273)\/",
+        "WorkingSetSize":  526393344,
+        "CommandLine":  "\"C:\\Users\\testuser\\.fnm\\node-versions\\v22.22.2\\installation\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe\" --dangerously-skip-permissions "
+    },
+    {
+        "ProcessId":  16336,
+        "ParentProcessId":  18912,
+        "CreationDate":  "\/Date(1777194591134)\/",
+        "WorkingSetSize":  568221696,
+        "CommandLine":  "\"C:\\Users\\testuser\\.fnm\\node-versions\\v22.22.2\\installation\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe\" --dangerously-skip-permissions "
+    }
+]

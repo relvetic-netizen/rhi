@@ -1,0 +1,83 @@
+# CI — `quality` builds the whole workspace (compile/typecheck gate); the
+# path-filtered `build-test` matrix runs each touched package's tests against a
+# fully-built workspace. A change to `shared` fans out to every downstream
+# package. We build the whole workspace before testing because several packages
+# resolve workspace dependencies at runtime (e.g. team -> extracted/dist), so
+# their tests need every package's `dist/` present.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Topological build of every package = compile + typecheck gate.
+      - run: pnpm -r --if-present run build
+
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # `shared` is a dependency of others, so its filter also lists the
+          # downstream packages that must rebuild when it changes. `team`
+          # consumes `extracted` at runtime, so it lists `extracted` too.
+          filters: |
+            shared:
+              - 'packages/shared/**'
+            discord-bot:
+              - 'packages/discord-bot/**'
+              - 'packages/shared/**'
+            browser:
+              - 'packages/browser/**'
+            team:
+              - 'packages/team/**'
+              - 'packages/extracted/**'
+            daemon:
+              - 'packages/daemon/**'
+              - 'packages/extracted/**'
+              - 'packages/shared/**'
+            extracted:
+              - 'packages/extracted/**'
+            wake-loop:
+              - 'packages/wake-loop/**'
+              - 'packages/shared/**'
+
+  build-test:
+    needs: changes
+    if: ${{ needs.changes.outputs.packages != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.changes.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Build the whole workspace so cross-package (incl. runtime-resolved)
+      # dependencies are present before the package under test runs.
+      - run: pnpm -r --if-present run build
+      - run: pnpm --filter "./packages/${{ matrix.package }}" --if-present run test

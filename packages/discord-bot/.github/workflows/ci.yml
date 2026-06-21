@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+        env:
+          # Stubs for module-load `requireEnv(...)` in src/config.ts — any test that imports
+          # config.ts transitively would otherwise process.exit(1) before the test body runs.
+          DISCORD_BOT_TOKEN: ci-dummy-token
+          # HTTP MCP transport ships flag-off in Sprint 1, so MCP_API_KEY is not strictly
+          # required here, but we set it defensively in case a test flips the flag.
+          MCP_HTTP_ENABLE: "false"
+          MCP_API_KEY: ci-dummy-api-key

@@ -1,0 +1,46 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.js.map
+*.d.ts
+!src/**/*.d.ts
+
+# Generated files
+invoices/
+swarms/*.log
+swarms/*.json
+claudes/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Sensitive config (use .example.json as templates)
+config/invoice-defaults.json
+config/notion-ids.json
+config/channels.json
+config/protected-rows.json
+
+# OSS-readiness audit artifact (internal, contains PII references)
+INVENTORY.md
+
+# Personal automation schedules (prompts fed to `claude -p`) — contain personal
+# IDs/paths. Ship only a sanitized example; keep your own schedules untracked.
+schedules/*
+!schedules/example-daily-report.md
+!schedules/README.md
+
+# Internal design/lore docs (persona-heavy, not user-facing)
+docs/persona-bot-plan.md
+docs/specs/discord-mode-persona.md
+
+# IDE
+.vscode/
+.idea/
+swarms/
+logs/
+.claude/worktrees/
+claudes/

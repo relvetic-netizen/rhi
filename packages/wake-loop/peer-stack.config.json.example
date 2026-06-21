@@ -1,0 +1,9 @@
+{
+  "orchSessionId": "peer-standby",
+  "team": "sisters",
+  "agent": "peer",
+  "bridge": {
+    "sshTarget": "<user>@<worker-host>",
+    "bashPath": "C:\\Program Files\\Git\\bin\\bash.exe"
+  }
+}

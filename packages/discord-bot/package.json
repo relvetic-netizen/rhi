@@ -1,0 +1,35 @@
+{
+  "name": "discord-claude-bot",
+  "version": "1.0.0",
+  "description": "Discord bot that operates local Claude Code via StructuredIO protocol",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "start:mcp": "node dist/mcp-standalone.js",
+    "start:combined": "node dist/mcp-entry.js",
+    "dev": "tsc --watch",
+    "test": "vitest run"
+  },
+  "overrides": {
+    "@modelcontextprotocol/sdk": "1.29.0"
+  },
+  "dependencies": {
+    "@rhi/shared": "workspace:*",
+    "@anthropic-ai/claude-agent-sdk": "^0.2.137",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "discord.js": "^14.16.0",
+    "dotenv": "^16.4.0",
+    "puppeteer-core": "^24.40.0",
+    "undici": "^6.21.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.2"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@rhi/wake-loop",
+  "version": "0.0.0",
+  "description": "Peer-wake supervisor: standby-supervisor, endpoint-registrar, heartbeat (2-PC topology).",
+  "license": "MIT",
+  "private": true,
+  "type": "module"
+}

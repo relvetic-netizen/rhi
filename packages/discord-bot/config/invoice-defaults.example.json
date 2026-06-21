@@ -1,0 +1,18 @@
+{
+  "issuer": {
+    "name": "Your Company Name",
+    "representative": "Representative Name",
+    "postalCode": "000-0000",
+    "address": "Your Address",
+    "phone": "000-0000-0000",
+    "email": "your@email.com"
+  },
+  "bankInfo": {
+    "bankName": "Bank Name",
+    "branchName": "Branch Name",
+    "branchCode": "000",
+    "accountType": "普通",
+    "accountNumber": "0000000",
+    "accountHolder": "Account Holder Name"
+  }
+}

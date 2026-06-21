@@ -1,0 +1,30 @@
+{
+  "_comment": "Copy to channels.json and replace the example IDs with your own Discord channel IDs. channels.json is gitignored. Each key is a Discord channel ID (right-click a channel > Copy Channel ID with Developer Mode on).",
+  "channels": {
+    "100000000000000001": {
+      "name": "general",
+      "mode": "none"
+    },
+    "100000000000000002": {
+      "name": "ai_chat",
+      "mode": "persona",
+      "persona": "aria"
+    },
+    "100000000000000003": {
+      "name": "ask",
+      "mode": "mention",
+      "systemPrompt": "Answer questions in this channel. Reply in the user's language."
+    },
+    "100000000000000004": {
+      "name": "project-x",
+      "mode": "mention",
+      "notionPageId": "00000000-0000-0000-0000-000000000000",
+      "systemPrompt": "Project channel. Notion Page ID: {{notion.projects}} (resolved from notion-ids.json)."
+    },
+    "100000000000000005": {
+      "name": "tasks",
+      "mode": "auto",
+      "systemPrompt": "Natural-language Notion task management. Use the Notion MCP tools to read and update pages."
+    }
+  }
+}

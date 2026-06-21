@@ -1,0 +1,7 @@
+{
+    "ProcessId":  8568,
+    "ParentProcessId":  5548,
+    "CreationDate":  "\/Date(1777123236876)\/",
+    "WorkingSetSize":  228409344,
+    "CommandLine":  "\"C:\\Users\\testuser\\.fnm\\node-versions\\v22.22.2\\installation\\\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe\"    remote-control --permission-mode bypassPermissions"
+}

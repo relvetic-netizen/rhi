@@ -1,0 +1,43 @@
+# --- Dependencies / build output ---
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.turbo/
+
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+*.local.json
+
+# Real persona registry (user-supplied; ship only persona.config.example.json)
+packages/discord-bot/persona.config.json
+
+# --- Logs / runtime ---
+logs/
+*.log
+pids/
+*.pid
+
+# --- Persistent memory DATA (engine code is public, memory content is NOT) ---
+# Real persona/memory data must never enter this repo. Only example/schema files
+# are allowed. These patterns guard daemon/extracted once their code is imported.
+**/memory/MEMORY.md
+**/memory/index.json
+**/memory/stats.json
+**/memory/topics/
+**/memory/logs/
+**/memory/diary/
+**/memory/concepts/
+# ...but always allow examples and schemas to ship:
+!**/memory/*.example.*
+!**/memory/example/
+!**/memory/schema/
+!**/memory/**/*.example.*
+
+# --- Editor / OS ---
+.DS_Store
+Thumbs.db
+.idea/
+*.swp

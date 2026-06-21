@@ -1,0 +1,2 @@
+# Host-specific peer-wake config — never commit. Ship peer-stack.config.json.example only.
+peer-stack.config.json

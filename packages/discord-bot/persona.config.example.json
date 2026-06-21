@@ -1,0 +1,31 @@
+{
+  "_comment": "Copy to persona.config.json (gitignored) and edit. Each entry defines one persona this bot can act as; the active one is selected via the BOT_PERSONA env var. The config file path can also be overridden with the RHI_PERSONA_CONFIG env var. All fields except `name` are OPTIONAL — anything omitted is derived generically from the persona name and your home directory (see field docs below).",
+  "personas": [
+    {
+      "name": "aria",
+      "_doc_vesselDir": "Working dir for the spawned Claude. Holds the persona's CLAUDE.md / prompts / state. Default: ~/.claude/relvetia/<name>",
+      "vesselDir": "~/.claude/relvetia/aria",
+      "_doc_soulDir": "Where the persona's long-form memory lives. Default: ~/.claude/memory/<name>",
+      "soulDir": "~/.claude/memory/aria",
+      "_doc_discordWakePath": "Markdown file used as the system prompt when the persona wakes for Discord. Default: <vesselDir>/prompts/discord-wake.md",
+      "discordWakePath": "~/.claude/relvetia/aria/prompts/discord-wake.md",
+      "_doc_env": "Extra env vars injected into the spawned Claude subprocess. Default: { RELVETIA_INCLUDE_<NAME>: \"1\" }",
+      "env": { "RELVETIA_INCLUDE_ARIA": "1" },
+      "_doc_additionalDirs": "Dirs the spawned Claude may read/write (--add-dir). Keep these scoped to THIS persona's own memory dir plus shared roots; do not include another persona's memory dir.",
+      "additionalDirs": [
+        "~/.claude",
+        "~/.claude/memory",
+        "~/.claude/memory/aria",
+        "~/.claude/relvetia",
+        "~/workspace",
+        "/tmp"
+      ],
+      "_doc_sessionStateDir": "Where per-guild session state JSON files live. Default: <vesselDir>/state/discord-sessions",
+      "sessionStateDir": "~/.claude/relvetia/aria/state/discord-sessions"
+    },
+    {
+      "_comment": "Minimal entry — only `name` is set; every other field is derived generically (e.g. vesselDir = ~/.claude/relvetia/nova, env = { RELVETIA_INCLUDE_NOVA: \"1\" }).",
+      "name": "nova"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "my-persona",
+  "memoryDir": "~/.claude/memory/my-persona",
+  "marker": "~/.claude/memory/my-persona/.enabled",
+  "expectedHost": "MY-COMPUTERNAME",
+  "corpusManifestPath": "~/path/to/relvetia-extracted/dist/memory/CorpusManifest.js",
+  "excludeRoots": ["archive"]
+}

@@ -1,0 +1,14 @@
+packages:
+  - "packages/*"
+
+# esbuild (daemon runner bundler) resolves its platform binary from its optional
+# dependency at runtime without running its postinstall, so we skip its build.
+# re2 IS required: the team package uses it for linear-time (ReDoS-safe) matching
+# of user-configurable guardrail regexes, so its native binary must be built.
+# Recording the decision here silences the ignored-builds advisory.
+allowBuilds:
+  esbuild: false
+  re2: true
+
+# Don't trigger an implicit install check before every `pnpm run`.
+verifyDepsBeforeRun: false

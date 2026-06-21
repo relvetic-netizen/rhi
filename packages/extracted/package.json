@@ -1,0 +1,20 @@
+{
+  "name": "@rhi/extracted",
+  "version": "0.1.0",
+  "description": "Relvetia memory system extracted modules (screening, memory, evals)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0",
+    "vitest": "^3.0.0"
+  }
+}

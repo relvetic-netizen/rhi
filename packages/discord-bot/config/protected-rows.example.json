@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy to protected-rows.json to mark specific Notion rows as edit-protected. Optional — when protected-rows.json is absent, no rows are protected. protected-rows.json is gitignored.",
+  "protected_rows": [
+    {
+      "id": "00000000-0000-0000-0000-000000000000",
+      "reason": "why this row must not be edited",
+      "since": "2026-01-01"
+    }
+  ],
+  "protected_pattern": ""
+}

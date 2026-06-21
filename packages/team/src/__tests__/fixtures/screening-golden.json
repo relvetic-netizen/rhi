@@ -1,0 +1,1212 @@
+{
+  "_meta": {
+    "upstream_commit": "0f573945e2134ee9e33c38b6de30ec8bae493a0c",
+    "upstream_path": "relvetia-extracted/screening/screening.ts",
+    "generated_at": "2026-05-16T05:01:32.672Z",
+    "schema_version": 1
+  },
+  "cases": [
+    {
+      "id": "ascii-jwt-query",
+      "description": "pure ASCII query against mixed corpus",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "jwt tokens",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          "score": 0.19958909150219642
+        }
+      ]
+    },
+    {
+      "id": "ascii-rendering-perf",
+      "description": "multi-word ASCII query, perf domain",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "rendering performance regression",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          "score": 0.35906175766871423
+        },
+        {
+          "item": {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          "score": 0.004778234082429187
+        }
+      ]
+    },
+    {
+      "id": "cjk-monitoring",
+      "description": "pure CJK query for monitoring dashboard",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "監視ダッシュボード",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          "score": 0.26152266650112277
+        },
+        {
+          "item": {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          "score": 0.0004329202443389998
+        }
+      ]
+    },
+    {
+      "id": "cjk-onboarding",
+      "description": "CJK katakana + kanji onboarding query",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "オンボーディング 資料",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          },
+          "score": 0.3482717300174761
+        }
+      ]
+    },
+    {
+      "id": "bilingual-database",
+      "description": "English query expected to match Japanese doc via bilingual bridge",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          "score": 0.047248616445203326
+        },
+        {
+          "item": {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          "score": 0.005101465393046468
+        }
+      ]
+    },
+    {
+      "id": "bilingual-cache",
+      "description": "mixed English+CJK query",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "キャッシュ cache invalidation",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          "score": 0.08040229782328717
+        },
+        {
+          "item": {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          "score": 0.06633858743332005
+        },
+        {
+          "item": {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          "score": 0.0006420316914238307
+        }
+      ]
+    },
+    {
+      "id": "empty-query",
+      "description": "empty query returns []",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "",
+        "config": {
+          "threshold": 0.1,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "whitespace-query",
+      "description": "whitespace-only query returns []",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "   \t\n  ",
+        "config": {
+          "threshold": 0.1,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "stopwords-only",
+      "description": "query made entirely of stopwords yields []",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "the and of for",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "threshold-zero",
+      "description": "threshold=0 lets nearly everything through (clamped to r=1.01)",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          "score": 0.03038690580880645
+        }
+      ]
+    },
+    {
+      "id": "threshold-high",
+      "description": "high threshold excludes weak matches",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.5,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "maxresults-one",
+      "description": "maxResults=1 returns at most 1",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0,
+          "maxResults": 1
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          "score": 0.06203291903920886
+        }
+      ]
+    },
+    {
+      "id": "maxresults-zero",
+      "description": "maxResults=0 returns []",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          },
+          {
+            "id": 4,
+            "text": "Frontend rendering performance regression in modal layout"
+          },
+          {
+            "id": 5,
+            "text": "データベースの認証フローが東京リージョンで失敗した"
+          },
+          {
+            "id": 6,
+            "text": "バックエンドのキャッシュ設定を更新"
+          },
+          {
+            "id": 7,
+            "text": "カスタムフォントのレンダリング問題を修正"
+          },
+          {
+            "id": 8,
+            "text": "監視ダッシュボードのレイテンシ表示が壊れている"
+          },
+          {
+            "id": 9,
+            "text": "チームのオンボーディング資料を作成"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0,
+          "maxResults": 0
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "maxresults-large",
+      "description": "maxResults far larger than passing items",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          {
+            "id": 2,
+            "text": "Redis cache invalidation on write-through path"
+          },
+          {
+            "id": 3,
+            "text": "Tokyo office on-call rotation for security incidents"
+          }
+        ],
+        "query": "database auth jwt",
+        "config": {
+          "threshold": 0,
+          "maxResults": 1000
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 1,
+            "text": "Auth flow uses JWT tokens with 15 minute TTL"
+          },
+          "score": 0.05085421847712402
+        },
+        {
+          "item": {
+            "id": 0,
+            "text": "Database migration failed in production today"
+          },
+          "score": 0.017178114769075613
+        }
+      ]
+    },
+    {
+      "id": "n-zero",
+      "description": "zero items returns []",
+      "input": {
+        "items": [],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "n-one-match",
+      "description": "single-item corpus matching the query",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database migration failed today"
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database migration failed today"
+          },
+          "score": 1
+        }
+      ]
+    },
+    {
+      "id": "n-one-nomatch",
+      "description": "single-item corpus that fails threshold",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "redis cluster setup notes"
+          }
+        ],
+        "query": "database migration",
+        "config": {
+          "threshold": 0.5,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "recency-boost-recent",
+      "description": "recency boost: recent items rank higher",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database migration failed",
+            "age": 86400000
+          },
+          {
+            "id": 1,
+            "text": "database tuning workshop notes",
+            "age": 2592000000
+          },
+          {
+            "id": 2,
+            "text": "database backup procedure draft",
+            "age": 5184000000
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 3,
+          "boostRecency": true,
+          "recencyHalfLifeMs": 604800000
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database migration failed",
+            "age": 86400000
+          },
+          "score": 0.01768169554272624
+        },
+        {
+          "item": {
+            "id": 1,
+            "text": "database tuning workshop notes",
+            "age": 2592000000
+          },
+          "score": 0.0010009206298347997
+        },
+        {
+          "item": {
+            "id": 2,
+            "text": "database backup procedure draft",
+            "age": 5184000000
+          },
+          "score": 0.000034554033082163915
+        }
+      ]
+    },
+    {
+      "id": "recency-without-boost",
+      "description": "no recency boost: pure TF-IDF order",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database migration failed",
+            "age": 86400000
+          },
+          {
+            "id": 1,
+            "text": "database tuning workshop notes",
+            "age": 2592000000
+          },
+          {
+            "id": 2,
+            "text": "database backup procedure draft",
+            "age": 5184000000
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 3
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database migration failed",
+            "age": 86400000
+          },
+          "score": 0.019522174632697026
+        },
+        {
+          "item": {
+            "id": 1,
+            "text": "database tuning workshop notes",
+            "age": 2592000000
+          },
+          "score": 0.019522174632697026
+        },
+        {
+          "item": {
+            "id": 2,
+            "text": "database backup procedure draft",
+            "age": 5184000000
+          },
+          "score": 0.013144856531646657
+        }
+      ]
+    },
+    {
+      "id": "stemming-failure",
+      "description": "stemming groups failure/failed/failures together",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "failure detected in production"
+          },
+          {
+            "id": 1,
+            "text": "failed deploys piling up"
+          },
+          {
+            "id": 2,
+            "text": "failures from prior incidents"
+          },
+          {
+            "id": 3,
+            "text": "success rate climbed back"
+          }
+        ],
+        "query": "failed",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 1,
+            "text": "failed deploys piling up"
+          },
+          "score": 0.07283685613542007
+        }
+      ]
+    },
+    {
+      "id": "identical-docs",
+      "description": "identical docs all pass; tie-breaking preserves insertion order",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database migration ran successfully"
+          },
+          {
+            "id": 1,
+            "text": "database migration ran successfully"
+          },
+          {
+            "id": 2,
+            "text": "database migration ran successfully"
+          }
+        ],
+        "query": "database migration",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database migration ran successfully"
+          },
+          "score": 0.9999999999999998
+        },
+        {
+          "item": {
+            "id": 1,
+            "text": "database migration ran successfully"
+          },
+          "score": 0.9999999999999998
+        },
+        {
+          "item": {
+            "id": 2,
+            "text": "database migration ran successfully"
+          },
+          "score": 0.9999999999999998
+        }
+      ]
+    },
+    {
+      "id": "long-doc-short-doc",
+      "description": "cosine normalization makes short and long doc tie",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database"
+          },
+          {
+            "id": 1,
+            "text": "database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database "
+          }
+        ],
+        "query": "database",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database"
+          },
+          "score": 1
+        },
+        {
+          "item": {
+            "id": 1,
+            "text": "database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database database "
+          },
+          "score": 1
+        }
+      ]
+    },
+    {
+      "id": "kanji-negation-prefix",
+      "description": "非対応 should not bridge to handle; 対応 should",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "非対応 のフィーチャー"
+          },
+          {
+            "id": 1,
+            "text": "対応 状況 を 確認"
+          }
+        ],
+        "query": "handle",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": []
+    },
+    {
+      "id": "cjk-bigram-overlap",
+      "description": "CJK bigram overlap finds both 東京 docs",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "東京 都 心 から リモート"
+          },
+          {
+            "id": 1,
+            "text": "東京 駅 から 出発"
+          }
+        ],
+        "query": "東京",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 1,
+            "text": "東京 駅 から 出発"
+          },
+          "score": 0.30967103899717313
+        },
+        {
+          "item": {
+            "id": 0,
+            "text": "東京 都 心 から リモート"
+          },
+          "score": 0.11998225866354494
+        }
+      ]
+    },
+    {
+      "id": "recency-decay-zeros-out",
+      "description": "extreme recency decay still keeps both above the 1e-10 floor",
+      "input": {
+        "items": [
+          {
+            "id": 0,
+            "text": "database migration",
+            "age": 86400000
+          },
+          {
+            "id": 1,
+            "text": "database migration",
+            "age": 17280000000
+          }
+        ],
+        "query": "database migration",
+        "config": {
+          "threshold": 0.05,
+          "maxResults": 5,
+          "boostRecency": true,
+          "recencyHalfLifeMs": 86400000
+        }
+      },
+      "expected": [
+        {
+          "item": {
+            "id": 0,
+            "text": "database migration",
+            "age": 86400000
+          },
+          "score": 0.5
+        }
+      ]
+    }
+  ]
+}

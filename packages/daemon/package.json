@@ -1,0 +1,36 @@
+{
+  "name": "@rhi/daemon",
+  "version": "0.1.0",
+  "description": "Relvetia autonomous scheduler daemon for Claude Code",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && npm run build:runners",
+    "build:runners": "node esbuild-runners.mjs",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "sanitize:private-stats": "node scripts/sanitize-private-stats.mjs",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build:runners",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:regression": "vitest run --config vitest.regression.config.ts test/regression",
+    "test:eval": "tsx ../extracted/evals/regressionEvalCli.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.2.137",
+    "@rhi/extracted": "workspace:*",
+    "@rhi/shared": "workspace:*",
+    "chokidar": "^4.0.0",
+    "croner": "^9.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

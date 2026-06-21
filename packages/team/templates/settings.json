@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/settings-schema.json",
+  "_comment": "Copy the mcpServers section into your ~/.claude/settings.json",
+
+  "mcpServers": {
+    "relvetia-team": {
+      "command": "node",
+      "args": ["REPLACE_WITH_ABSOLUTE_PATH/relvetia-team/src/index.js"]
+    }
+  }
+}

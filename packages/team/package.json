@@ -1,0 +1,24 @@
+{
+  "name": "relvetia-team",
+  "version": "1.0.0",
+  "description": "File-based multi-agent collaboration system for Claude Code",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test \"src/__tests__/*.test.js\""
+  },
+  "keywords": [
+    "claude-code",
+    "mcp",
+    "multi-agent"
+  ],
+  "author": "relvetic",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "proper-lockfile": "^4.1.2",
+    "re2": "^1.24.0",
+    "zod": "^4.3.6"
+  }
+}
