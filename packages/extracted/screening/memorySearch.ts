@@ -40,11 +40,6 @@ import {
 } from '../memory/residualIndex.js'
 import { topicPathForEntry } from '../memory/topicPathForEntry.js'
 import {
-  readMemoryStats,
-  usageMultiplier,
-  type MemoryStatsData,
-} from '../memory/memoryStats.js'
-import {
   isPrivatePath,
   isPrivateEntry,
   shouldIncludePrivate,
@@ -54,7 +49,7 @@ import {
   isLiteralFallbackEnabled,
   literalSubstringSearch,
 } from './literalFallback.js'
-import { searchRecentLogLines } from './logLineSearch.js'
+import { searchAllLogLines, searchRecentLogLines } from './logLineSearch.js'
 import {
   matchesCorpus,
   type CorpusManifest,
@@ -77,26 +72,21 @@ export type SearchResult = {
   filePath: string
   /** First ~300 chars of file content as preview snippet. */
   snippet: string
-  /** Screening score (higher = more relevant).
-   *
-   *  Until Phase H-3 (2026-05-19) this was `rawBm25 * usageMultiplier(stats)`,
-   *  conflating relevance with popularity. The composition is preserved here
-   *  for backward compatibility; callers that want pure relevance must read
-   *  `rawScore` instead. See Codex P0-1 (memorySearch architectural review,
-   *  2026-05-19) and `MemoryRetrievalEngine.sortBy`. */
+  /** Screening score (higher = more relevant). Equal to `rawScore`;
+   *  the former usage-based multiplier was removed. */
   score: number
-  /** Raw relevance score from BM25 + screening, BEFORE usageMultiplier is
-   *  applied. Populated by Phase H-3 for entry- / file-layer hits; absent
-   *  for log-line / literal fallback hits where no usage adjustment is
-   *  applied (in which case `score === rawScore` by construction). */
+  /** Raw relevance score from BM25 + screening. Kept for backward
+   *  compatibility; equal to `score` on entry- / file-layer hits and absent
+   *  for log-line / literal fallback hits. */
   rawScore?: number
   /** Concept tags from residual index, if available. */
   concepts?: string[]
   /** Origin of the hit. 'bm25' = BM25 screening (Phase 1.5+),
    *  'log-line' = recent log line scan (Phase 2), 'tfidf' = legacy TF-IDF
    *  (kept for back-compat with serialized SearchResult logs),
+   *  'log-archive' = all-time log line fallback (no recency),
    *  'literal' = substring fallback. */
-  source?: 'tfidf' | 'bm25' | 'log-line' | 'literal'
+  source?: 'tfidf' | 'bm25' | 'log-line' | 'log-archive' | 'literal'
 }
 
 // ---------------------------------------------------------------------------
@@ -142,6 +132,10 @@ const MAX_FILE_BYTES =
     ? LEGACY_MAX_FILE_BYTES
     : DEFAULT_MAX_FILE_BYTES
 const SNIPPET_LENGTH = 300
+// Entry-layer score multiplier for entries with `superseded_by` set. Halving
+// lets a successor matching the same terms outrank its predecessor, while a
+// stale entry that is the only match still surfaces (demote, not delete).
+const SUPERSEDED_PENALTY = 0.5
 
 // Backward-compat re-export. Privacy gate moved to `../memory/memoryPrivacy.ts`
 // in the Phase 2 memory-hardening sprint so the 5 retrieval paths share a
@@ -299,14 +293,11 @@ export async function searchMemoryWithScreening(
   // this top-level search entry point.
   const manifest = resolveEffectiveManifest(opts)
 
-  // Saga 11 engine-cache-layer: residual index + memory stats are small JSON
-  // blobs that don't change between back-to-back searches. Cache via getBlob,
-  // invalidated by the memory dir watcher when either file mutates.
+  // Saga 11 engine-cache-layer: the residual index is a small JSON blob that
+  // doesn't change between back-to-back searches. Cache via getBlob,
+  // invalidated by the memory dir watcher when the file mutates.
   const searchCache = getDefaultSearchCache()
-  const [residualIndex, statsData] = await Promise.all([
-    searchCache.getBlob(memoryDir, 'residualIndex', () => readResidualIndex(memoryDir)),
-    searchCache.getBlob(memoryDir, 'memoryStats', () => readMemoryStats(memoryDir)),
-  ])
+  const residualIndex = await searchCache.getBlob(memoryDir, 'residualIndex', () => readResidualIndex(memoryDir))
 
   // ── Phase 1: per-entry scoring (案 A, Pi 推奨) ───────────────────────
   // Bypasses MAX_FILE_BYTES=10K truncation by treating each index entry as
@@ -316,7 +307,6 @@ export async function searchMemoryWithScreening(
   const entryResults = scoreEntriesAndDedupByTopic(
     memoryDir,
     residualIndex,
-    statsData,
     query,
     config,
     manifest,
@@ -328,7 +318,8 @@ export async function searchMemoryWithScreening(
   // overlapping topic file paths.
   const files = await readMemoryFiles(memoryDir, { manifest })
   if (files.length === 0) {
-    return entryResults.slice(0, config.maxResults)
+    const withArchive = await appendLogArchive(memoryDir, query, config, entryResults)
+    return withArchive.slice(0, config.maxResults)
   }
   const conceptMap = buildConceptMap(residualIndex, memoryDir, includePrivate)
 
@@ -355,15 +346,11 @@ export async function searchMemoryWithScreening(
 
   const fileResults: SearchResult[] = scored.map(s => {
     const concepts = getConceptsForFile(residualIndex, s.item.relativePath, includePrivate)
-    const stats = statsData.entries[s.item.relativePath]
-    const adjustedScore = s.score * usageMultiplier(stats)
     return {
       path: s.item.relativePath,
       filePath: s.item.filePath,
       snippet: s.item.content.slice(0, SNIPPET_LENGTH),
-      score: adjustedScore,
-      // Phase H-3: surface raw BM25/screening score so downstream callers
-      // (MemoryRetrievalEngine sortBy:'raw') can rank without popularity.
+      score: s.score,
       rawScore: s.score,
       ...(concepts.length > 0 ? { concepts } : {}),
       source: 'bm25' as const,
@@ -375,7 +362,12 @@ export async function searchMemoryWithScreening(
   // Merge layer results in fixed precedence order. Entry hits win duplicate
   // file paths, file hits come next, and raw log lines are appended with a
   // line-level dedup key so multiple relevant lines in one log can survive.
-  const tfidfResults = mergeSearchLayers(entryResults, fileResults, logLineResults)
+  const tfidfResults = await appendLogArchive(
+    memoryDir,
+    query,
+    config,
+    mergeSearchLayers(entryResults, fileResults, logLineResults),
+  )
 
   if (tfidfResults.length === 0 && files.length > 0) {
     logScreeningEvent('search_zero_results', {
@@ -413,15 +405,25 @@ export async function searchMemoryWithScreening(
   return tfidfResults.slice(0, config.maxResults)
 }
 
-function mergeSearchLayers(
-  entryResults: SearchResult[],
-  fileResults: SearchResult[],
-  logLineResults: SearchResult[],
-): SearchResult[] {
+// Layer 4: all-time log lines, so lines older than 48h that distillation
+// never summarized stay reachable. Fires only when the upper layers fall
+// short of maxResults — a single condition that also covers zero hits —
+// so a well-served query never pays for the full log scan.
+async function appendLogArchive(
+  memoryDir: string,
+  query: string,
+  config: ScreeningConfig,
+  upper: SearchResult[],
+): Promise<SearchResult[]> {
+  if (upper.length >= config.maxResults) return upper
+  return mergeSearchLayers(upper, await searchAllLogLines(memoryDir, query, config))
+}
+
+function mergeSearchLayers(...layers: SearchResult[][]): SearchResult[] {
   const merged: SearchResult[] = []
   const seen = new Set<string>()
 
-  for (const layer of [entryResults, fileResults, logLineResults]) {
+  for (const layer of layers) {
     for (const result of layer) {
       const key = searchResultDedupKey(result)
       if (seen.has(key)) continue
@@ -435,8 +437,9 @@ function mergeSearchLayers(
 
 function searchResultDedupKey(result: SearchResult): string {
   const maybeLogLine = result as unknown as { source?: string; lineNumber?: number }
-  if (maybeLogLine.source === 'log-line' && typeof maybeLogLine.lineNumber === 'number') {
-    return `${result.path}#L${maybeLogLine.lineNumber}`
+  const isLogLine = maybeLogLine.source === 'log-line' || maybeLogLine.source === 'log-archive'
+  if (isLogLine && typeof maybeLogLine.lineNumber === 'number') {
+    return `${result.path.replace(/\\/g, '/')}#L${maybeLogLine.lineNumber}`
   }
   return result.path
 }
@@ -452,7 +455,6 @@ function searchResultDedupKey(result: SearchResult): string {
 function scoreEntriesAndDedupByTopic(
   memoryDir: string,
   residualIndex: ResidualIndex,
-  statsData: MemoryStatsData,
   query: string,
   config: ScreeningConfig,
   manifest: CorpusManifest | undefined,
@@ -495,28 +497,27 @@ function scoreEntriesAndDedupByTopic(
   type DedupBucket = { item: EntryItem; score: number; entryIds: string[] }
   const byPath = new Map<string, DedupBucket>()
   for (const s of scored) {
+    const score = s.item.entry.superseded_by ? s.score * SUPERSEDED_PENALTY : s.score
     const cur = byPath.get(s.item.topicPath)
     if (!cur) {
-      byPath.set(s.item.topicPath, { item: s.item, score: s.score, entryIds: [s.item.entry.id] })
+      byPath.set(s.item.topicPath, { item: s.item, score, entryIds: [s.item.entry.id] })
     } else {
       cur.entryIds.push(s.item.entry.id)
-      if (s.score > cur.score) {
-        cur.score = s.score
+      if (score > cur.score) {
+        cur.score = score
         cur.item = s.item
       }
     }
   }
 
   return [...byPath.values()].map(({ item, score }) => {
-    const stats = statsData.entries[item.topicPath]
-    const adjustedScore = score * usageMultiplier(stats)
     return {
       path: item.topicPath,
       filePath: join(memoryDir, item.topicPath),
-      snippet: item.entry.summary.slice(0, SNIPPET_LENGTH),
-      score: adjustedScore,
-      // Phase H-3: surface raw BM25/screening score so downstream callers
-      // (MemoryRetrievalEngine sortBy:'raw') can rank without popularity.
+      snippet: (item.entry.superseded_by
+        ? `[superseded→${item.entry.superseded_by}] ${item.entry.summary}`
+        : item.entry.summary).slice(0, SNIPPET_LENGTH),
+      score,
       rawScore: score,
       ...(item.entry.concepts.length > 0 ? { concepts: item.entry.concepts } : {}),
       source: 'bm25' as const,

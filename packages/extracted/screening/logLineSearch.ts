@@ -65,9 +65,7 @@ export async function searchRecentLogLines(
   const searchCache = getDefaultSearchCache()
   const cutoffBucket = Math.floor(cutoffMs / LOG_LINE_RECENCY_HALF_LIFE_MS)
   const logBundleKey = `log-line:${cutoffBucket}`
-  const itemTexts = files.items.map(line =>
-    `${line.path.replace(/[-_./]/g, ' ')} ${line.tags.join(' ')} ${line.body}`,
-  )
+  const itemTexts = files.items.map(logLineText)
   const logBundle = searchCache.getBundle(memoryDir, logBundleKey, () =>
     buildCorpusBundle(itemTexts),
   )
@@ -93,7 +91,7 @@ export async function searchRecentLogLines(
       )
     : screenItemsBM25(
         files.items,
-        line => `${line.path.replace(/[-_./]/g, ' ')} ${line.tags.join(' ')} ${line.body}`,
+        logLineText,
         query,
         {
           ...config,
@@ -116,20 +114,54 @@ export async function searchRecentLogLines(
     parserSkipCount,
   })
 
-  return scored.map(s => ({
-    path: s.item.path,
-    filePath: join(memoryDir, s.item.path),
-    snippet: `${s.item.hhmm} ${s.item.tags.map(t => `[${t}]`).join(' ')} ${s.item.body}`
+  return scored.map(s => toLogLineResult(memoryDir, s.item, s.score, 'log-line'))
+}
+
+/**
+ * Archive layer: every log line regardless of age, scored by BM25 alone.
+ * No recency factor, so an old fact competes on equal terms with a new one.
+ * memorySearch calls this only when the upper layers leave room.
+ */
+export async function searchAllLogLines(
+  memoryDir: string,
+  query: string,
+  config: ScreeningConfig,
+  options: Bm25ScreeningOptions = {},
+): Promise<SearchResult[]> {
+  if (!query.trim()) return []
+  const { files } = await readRecentLogLineItems(memoryDir, -Infinity)
+  const scored = screenItemsBM25(files.items, logLineText, query, config, undefined, {
+    k1: options.k1,
+    b: options.b,
+    scale: options.scale,
+  })
+  return scored.map(s => toLogLineResult(memoryDir, s.item, s.score, 'log-archive'))
+}
+
+function logLineText(line: LogLineItem): string {
+  return `${line.path.replace(/[-_./]/g, ' ')} ${line.tags.join(' ')} ${line.body}`
+}
+
+function toLogLineResult(
+  memoryDir: string,
+  item: LogLineItem,
+  score: number,
+  source: 'log-line' | 'log-archive',
+): SearchResult {
+  return {
+    path: item.path,
+    filePath: join(memoryDir, item.path),
+    snippet: `${item.hhmm} ${item.tags.map(t => `[${t}]`).join(' ')} ${item.body}`
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, SNIPPET_LENGTH),
-    score: s.score,
-    source: 'log-line',
-    lineNumber: s.item.lineNumber,
-    hhmm: s.item.hhmm,
-    tags: s.item.tags,
-    epochMs: s.item.epochMs,
-  } as unknown as SearchResult))
+    score,
+    source,
+    lineNumber: item.lineNumber,
+    hhmm: item.hhmm,
+    tags: item.tags,
+    epochMs: item.epochMs,
+  } as unknown as SearchResult
 }
 
 async function readRecentLogLineItems(

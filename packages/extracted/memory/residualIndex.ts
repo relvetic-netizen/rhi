@@ -48,6 +48,10 @@ export type ResidualEntry = {
   updated: string
   /** Confidence score 0-1. Decremented by user corrections. */
   confidence: number
+  /** Date (YYYY-MM-DD) the fact became true. Unset = no claim. */
+  valid_from?: string
+  /** Id of the newer entry that overturned this one. Unset = still valid. */
+  superseded_by?: string
 }
 
 export type ResidualIndex = {

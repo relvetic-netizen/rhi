@@ -168,25 +168,3 @@ export async function decayPenalties(memoryDir: string): Promise<void> {
     await writeMemoryStats(memoryDir, stats)
   }
 }
-
-// ---------------------------------------------------------------------------
-// Score adjustment
-// ---------------------------------------------------------------------------
-
-/**
- * Compute the usage-based score multiplier for an entry.
- *
- * usefulness = log2(hitCount + 1) — logarithmic to prevent runaway scores
- * penalty    = (1 - penalty) — linear suppression
- *
- * Combined: log2(hitCount + 1) × (1 - penalty)
- *
- * Returns 1.0 for entries with no stats (neutral — doesn't boost or suppress).
- */
-export function usageMultiplier(stats: EntryStats | undefined): number {
-  if (!stats) return 1.0
-  const usefulness = Math.log2(stats.hitCount + 1)
-  const penaltyFactor = 1 - stats.penalty
-  // Clamp to [0.1, 5.0] to prevent extreme values
-  return Math.max(0.1, Math.min(5.0, Math.max(usefulness, 1.0) * penaltyFactor))
-}

@@ -12,7 +12,7 @@ relvetia-extracted/
 │   ├── noveltyScreening.ts  # 逆 Trim-and-Square（書き込み側新規性検出）
 │   ├── memoryScreening.ts   # メモリ検索事前フィルタ
 │   ├── messageScreening.ts  # コンテキスト圧縮スコアリング
-│   ├── memorySearch.ts      # スクリーニング対応全文検索
+│   ├── memorySearch.ts      # 4層検索 (index エントリ → 新規ファイル → 48h ログ行 → 全期間ログ行)。superseded_by 付きエントリは降格
 │   ├── screeningConfig.ts   # Zod 設定スキーマ
 │   ├── stopwords.ts         # ストップワードリスト
 │   └── README.md            # モジュール詳細ドキュメント
