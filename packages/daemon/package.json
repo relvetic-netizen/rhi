@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:regression": "vitest run --config vitest.regression.config.ts test/regression",
-    "test:eval": "tsx ../extracted/evals/regressionEvalCli.ts"
+    "test:eval": "tsx ../extracted/evals/regressionEvalCli.ts",
+    "eval:longmemeval": "tsx ../extracted/evals/longMemEvalRun.ts"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.137",

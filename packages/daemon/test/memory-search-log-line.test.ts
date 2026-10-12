@@ -139,3 +139,48 @@ describe('searchMemoryWithScreening log-line layer merge', () => {
     expect(results.some(r => sourceOf(r) === 'log-line' && r.snippet.includes('public line'))).toBe(true)
   })
 })
+
+describe('searchMemoryWithScreening log-archive layer', () => {
+  it('reaches log lines older than 48h that the index never summarized', async () => {
+    const memoryDir = await makeMemoryDir()
+    await writeIndex(memoryDir, {
+      arc_001: {
+        id: 'arc_001',
+        summary: 'unrelated distilled summary about deploys',
+        sources: [],
+        concepts: ['deploy'],
+        topic: 'deploys',
+        updated: '2026-01-10',
+        confidence: 1,
+      },
+    })
+    await writeMemoryFile(
+      memoryDir,
+      'logs/2026/01/2026-01-10.md',
+      '- [09:00] [note] unrelated line\n- [09:05] [decision] quillfeather archive decision recorded\n',
+    )
+
+    const results = await searchMemoryWithScreening(memoryDir, 'quillfeather', config)
+    const archive = results.filter(r => sourceOf(r) === 'log-archive')
+    expect(archive).toHaveLength(1)
+    expect(normalizedPath(archive[0]!)).toBe('logs/2026/01/2026-01-10.md')
+    expect((archive[0] as unknown as { lineNumber: number }).lineNumber).toBe(2)
+    expect(archive[0]!.snippet).toContain('quillfeather archive decision')
+  })
+
+  it('keeps recent lines in the log-line layer without duplicating them as archive', async () => {
+    const memoryDir = await makeMemoryDir()
+    await writeIndex(memoryDir, {})
+    const today = todayLogPath()
+    await writeMemoryFile(memoryDir, today.path, `- [${today.hhmm}] marrowlight recent line\n`)
+    await writeMemoryFile(memoryDir, 'logs/2026/01/2026-01-10.md', '- [09:05] marrowlight old line\n')
+
+    const results = await searchMemoryWithScreening(memoryDir, 'marrowlight', config)
+    const logLines = results.filter(r => sourceOf(r) === 'log-line')
+    const archive = results.filter(r => sourceOf(r) === 'log-archive')
+    expect(logLines).toHaveLength(1)
+    expect(logLines[0]!.snippet).toContain('recent line')
+    expect(archive).toHaveLength(1)
+    expect(archive[0]!.snippet).toContain('old line')
+  })
+})

@@ -440,7 +440,19 @@ edit `index.json` directly; instead, the next nightly distill
 regenerates the affected entry ids from the updated topic paths.
 
 When removing obsolete entries from topics, also remove them from the
-index.
+index. (Removal is for entries whose topic text is gone entirely; a fact
+overturned by a newer one is kept and marked `superseded_by`, see below.)
+
+**Superseded facts:** when a new entry overturns the fact of an existing
+entry, do NOT delete the old entry. Set `"superseded_by": "<new id>"` on
+the old entry and `"valid_from": "<YYYY-MM-DD the new fact became true>"`
+on the new one. Search demotes superseded entries and points readers to
+the successor. Both fields are optional; omit them otherwise. Example:
+
+```json
+"project_context__172": { "summary": "api-server: old deploy target ...", "superseded_by": "project_context__179", "...": "..." },
+"project_context__179": { "summary": "api-server: new deploy target (replaces the old one) ...", "valid_from": "2026-09-30", "...": "..." }
+```
 
 ### 6. Regenerate MEMORY.md
 Rewrite `~/.claude/memory/MEMORY.md` as a lightweight index:
@@ -528,7 +540,7 @@ is truncated mid-output.
 - NEVER delete or modify auto-memory files in `projects/*/memory/`
 - NEVER write to `.last-distill` — the daemon owns the timestamp
 - NEVER include code snippets or secrets
-- When entries conflict, latest wins
+- When entries conflict, latest wins: mark the older index entry `superseded_by` the newer one (Step 5) instead of deleting it
 - If unsure whether something is obsolete, KEEP it
 - If there are no new entries (from logs AND auto-memory) since last distillation, exit cleanly (the daemon stamps the timestamp on successful exit)
 - Every distilled entry MUST have a corresponding index.json entry with sources, concepts, topic, confidence, and updated

@@ -36,6 +36,9 @@ pids/
 !**/memory/schema/
 !**/memory/**/*.example.*
 
+# --- LongMemEval benchmark data (downloaded, not committed) ---
+/longmemeval/
+
 # --- Editor / OS ---
 .DS_Store
 Thumbs.db
