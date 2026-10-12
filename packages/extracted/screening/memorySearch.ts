@@ -72,10 +72,8 @@ export type SearchResult = {
   filePath: string
   /** First ~300 chars of file content as preview snippet. */
   snippet: string
-  /** Screening score (higher = more relevant).
-   *
-   *  Phase H-3 以降 rawScore と同値。usage 重み (stats.json) は 2026-06-18 で
-   *  更新が止まり、固定値が順位をゆがめるだけだったため除去した。 */
+  /** Screening score (higher = more relevant). Equal to `rawScore`;
+   *  the former usage-based multiplier was removed. */
   score: number
   /** Raw relevance score from BM25 + screening. Kept for backward
    *  compatibility; equal to `score` on entry- / file-layer hits and absent
