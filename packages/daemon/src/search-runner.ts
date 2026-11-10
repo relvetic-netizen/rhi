@@ -8,6 +8,7 @@
 //   node dist/search-runner.js "query text"
 //   node dist/search-runner.js "query text" --memory-dir /path --max-results 10
 //   node dist/search-runner.js "query text" --json
+//   node dist/search-runner.js "query text" --verbose   (screening diagnostics on stderr)
 //
 // Output: human-readable search results (default) or JSON (--json)
 
@@ -15,14 +16,17 @@ import {
   executeMemorySearch,
   formatSearchResults,
 } from '../../extracted/tools/MemorySearchTool.js'
+import { enableScreeningLog } from '../../extracted/screening/screeningLog.js'
 
 async function main() {
-  console.warn('[deprecated] bash CLI search-runner is deprecated. Use mcp__relvetia-team__memory_search instead.')
   const args = process.argv.slice(2)
 
   // Extract flags
   const jsonOutput = args.includes('--json')
-  const filteredArgs = args.filter(a => a !== '--json')
+  // Diagnostics only on --verbose: an inherited RELVETIA_SCREENING_SEARCH=1
+  // (exported by the daemon environment) must not leak JSON lines to stderr.
+  enableScreeningLog(args.includes('--verbose'))
+  const filteredArgs = args.filter(a => a !== '--json' && a !== '--verbose')
 
   // Parse --memory-dir
   const memDirIdx = filteredArgs.indexOf('--memory-dir')
@@ -57,7 +61,7 @@ async function main() {
   // Remaining arg is the query
   const query = filteredArgs[0]
   if (!query?.trim()) {
-    console.error('Usage: search-runner.js "query" [--memory-dir path] [--max-results N] [--json] [--record-usage]')
+    console.error('Usage: search-runner.js "query" [--memory-dir path] [--max-results N] [--json] [--record-usage] [--verbose]')
     process.exit(1)
   }
 

@@ -62,7 +62,9 @@ function runSearchRunner(
     const proc = spawn(
       process.execPath,
       [RUNNER_PATH, query, '--memory-dir', memoryDir, '--json', ...extraArgs],
-      { stdio: ['ignore', 'pipe', 'pipe'] },
+      // RELVETIA_SCREENING_SEARCH=1 mimics the daemon environment so the
+      // quiet-stderr test proves the CLI ignores the inherited switch.
+      { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, RELVETIA_SCREENING_SEARCH: '1' } },
     )
     let stdout = ''
     let stderr = ''
@@ -141,27 +143,14 @@ describe('search-runner JSON contract', () => {
     expect(() => JSON.parse(stdout)).not.toThrow()
   })
 
-  // Saga 10 Phase 4 revC P1 #2: stderr line 1 sentinel for the deprecation
-  // WARN added in commit 4ada68a. Prior to revC the existing snapshot tests
-  // discarded stderr on success, so a future regression that removed the
-  // WARN or moved it past line 1 would pass silently. This test pins:
-  //   (a) stderr line 1 is the exact WARN string we emit at main() startup
-  //   (b) stdout still parses as one-shot JSON (the WARN must go to stderr
-  //       only — Lesson §14 contract atomic sync: deprecation WARN on stderr,
-  //       JSON on stdout, no mixing).
-  // It also serves as a build-time canary: if dist-runners/search-runner.js
-  // is rebuilt from a source that lost the WARN, this test fails loud.
-  it('--json startup emits the deprecation WARN on stderr line 1, leaves stdout JSON-clean (revC P1 #2)', async () => {
+  // The CLI is a standalone part called by other tools and shells, so stderr
+  // stays empty by default: no deprecation banner, and no screening
+  // diagnostics even when the environment exports RELVETIA_SCREENING_SEARCH=1.
+  it('writes nothing to stderr by default', async () => {
     const memoryDir = await setupMemoryDir()
     const { stdout, stderr } = await runSearchRunner(memoryDir, 'bun')
 
-    const firstStderrLine = stderr.split(/\r?\n/)[0]
-    expect(firstStderrLine).toBe(
-      '[deprecated] bash CLI search-runner is deprecated. Use mcp__relvetia-team__memory_search instead.',
-    )
-
-    // stdout must remain machine-parseable in one shot — the WARN must not
-    // have leaked across (the design intent is `--json` stays pipe-safe).
+    expect(stderr).toBe('')
     expect(() => JSON.parse(stdout)).not.toThrow()
   })
 

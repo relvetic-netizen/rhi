@@ -25,7 +25,8 @@ type LogLineSearchOptions = Bm25ScreeningOptions & {
 }
 
 const LOG_LINE_RE = /^- \[(\d{2}):(\d{2})\] (?:(\[[^\]]+\](?:\[[^\]]+\])*)\s+)?(.+)$/
-const LOG_PATH_RE = /^logs\/(\d{4})\/(\d{2})\/(\d{4})-(\d{2})-(\d{2})\.md$/
+// Optional `<name>/` segment: per-person logs live at logs/<name>/YYYY/MM/.
+const LOG_PATH_RE = /^logs\/(?:[^/]+\/)?(\d{4})\/(\d{2})\/(\d{4})-(\d{2})-(\d{2})\.md$/
 const LOG_LINE_RECENCY_HALF_LIFE_MS = 48 * 3600 * 1000
 const SNIPPET_LENGTH = 300
 
