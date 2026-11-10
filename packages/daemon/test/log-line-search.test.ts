@@ -161,6 +161,21 @@ describe('searchRecentLogLines', () => {
     expect(results[0]!.snippet).toContain('strict path target')
   })
 
+  it('scans per-person logs/<name>/YYYY/MM/YYYY-MM-DD.md line by line', async () => {
+    const memoryDir = await makeMemoryDir()
+    const lines = Array.from({ length: 200 }, (_, i) =>
+      i === 119 ? '- [10:30] [decision] BM25 deploy target line' : `- [10:00] [note] unrelated note ${i + 1}`)
+    await writeMemoryFile(memoryDir, 'logs/yamada/2026/05/2026-05-03.md', lines.join('\n') + '\n')
+    await writeMemoryFile(memoryDir, 'logs/tamura/2026/05/2026-05-03.md', '- [10:00] lighting meeting next week\n')
+
+    const results = await searchRecentLogLines(memoryDir, 'BM25 deploy', config, { cutoffMs })
+    expect(results).toHaveLength(1)
+    const first = results[0] as LogLineSearchResult
+    expect(first.path).toBe('logs/yamada/2026/05/2026-05-03.md')
+    expect(first.lineNumber).toBe(120)
+    expect(first.snippet).toContain('BM25 deploy target line')
+  })
+
   it('excludes private private paths even when they contain log-shaped files', async () => {
     const memoryDir = await makeMemoryDir()
     await writeMemoryFile(memoryDir, 'private/logs/2026/05/2026-05-03.md', '- [10:00] BM25 private line\n')

@@ -8,8 +8,10 @@
 
 // Auto-enable when RELVETIA_SCREENING_SEARCH=1 is set in the environment.
 // This propagates through PM2 (daemon parent) and spawned children
-// (verify-runner / search-runner / MemorySearchTool) without explicit
-// enableScreeningLog(true) calls in each entry point.
+// (verify-runner / MemorySearchTool) without explicit enableScreeningLog(true)
+// calls in each entry point. The search-runner CLI is the exception: it sets
+// the flag itself and logs only with --verbose, so an inherited env value
+// never writes to a caller's stderr.
 let _enabled = process.env.RELVETIA_SCREENING_SEARCH === '1'
 
 /** Enable or disable screening diagnostic logging. */
