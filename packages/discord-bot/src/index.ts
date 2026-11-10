@@ -21,9 +21,6 @@ import {
   buildImagePrompt,
   cleanupTempAttachments,
 } from "./discord/attachments.js";
-import { createHttpMcpServer } from "./mcp/http-tool-filter.js";
-import { startHttpMcpServer } from "./mcp/http-transport.js";
-import { buildClientReadyProbe } from "./mcp/client-ready-probe.js";
 import {
   routeMentionToPersona,
   startCleanupJob as startPersonaCleanup,
@@ -250,11 +247,9 @@ client.once("clientReady", async () => {
   }
 });
 
-let httpMcpHandle: { close: () => Promise<void> } | null = null;
-
 async function shutdown(signal: string): Promise<void> {
   console.log(`[bot] Shutting down (${signal})...`);
-  // Outer hard-kill in case any awaited close (Discord, HTTP MCP, persona)
+  // Outer hard-kill in case any awaited close (Discord, persona)
   // hangs — NSSM would eventually SIGKILL, but a deterministic exit beats a zombie.
   const hardKill = setTimeout(() => {
     console.error("[bot] Shutdown stuck after 10s, forcing exit");
@@ -264,13 +259,6 @@ async function shutdown(signal: string): Promise<void> {
   stopPersonaCleanup();
   destroyPersonaSessions();
   sessionManager.destroyAll();
-  if (httpMcpHandle) {
-    try {
-      await httpMcpHandle.close();
-    } catch (err) {
-      console.error("[bot] HTTP MCP close failed:", err);
-    }
-  }
   client.destroy();
   process.exit(0);
 }
@@ -279,23 +267,10 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
 async function main(): Promise<void> {
-  if (config.mcpHttpEnable) {
-    try {
-      httpMcpHandle = await startHttpMcpServer(createHttpMcpServer(client), {
-        isClientReady: buildClientReadyProbe(client),
-      });
-    } catch (err) {
-      console.error("[bot] FATAL: HTTP MCP failed to start:", err);
-      process.exit(1);
-    }
-  }
   try {
     await client.login(config.discordBotToken);
   } catch (err) {
     console.error("[bot] FATAL: Discord login failed:", err);
-    if (httpMcpHandle) {
-      await httpMcpHandle.close().catch(() => undefined);
-    }
     process.exit(1);
   }
 }

@@ -3,7 +3,7 @@ import type { Client } from "discord.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { safeTool } from "../server.js";
 import { resolveGuild, checkRateLimit } from "../utils/guards.js";
-import { fmtGuild, fmtMember, fmtMessage } from "../utils/formatters.js";
+import { fmtMessage } from "../utils/formatters.js";
 
 export function registerGuildTools(server: McpServer, client: Client): void {
   // discord_list_guilds
@@ -25,40 +25,6 @@ export function registerGuildTools(server: McpServer, client: Client): void {
       return fetched
         .map((g) => `${g.name} (${g.id})`)
         .join("\n");
-    }
-  );
-
-  // discord_get_guild
-  safeTool(
-    server,
-    "discord_get_guild",
-    "Get detailed info about a guild",
-    {
-      guild_id: z.string().describe("Guild ID"),
-    },
-    async ({ guild_id }) => {
-      checkRateLimit(guild_id, "get_guild");
-      const guild = await resolveGuild(client, guild_id);
-      return fmtGuild(guild);
-    }
-  );
-
-  // discord_list_members
-  safeTool(
-    server,
-    "discord_list_members",
-    "List members of a guild (with roles)",
-    {
-      guild_id: z.string().describe("Guild ID"),
-      limit: z.number().min(1).max(100).default(50).describe("Max members to fetch (1-100)"),
-    },
-    async ({ guild_id, limit }) => {
-      checkRateLimit(guild_id, "list_members");
-      const guild = await resolveGuild(client, guild_id);
-      const members = await guild.members.list({ limit });
-
-      if (members.size === 0) return "No members found.";
-      return members.map(fmtMember).join("\n---\n");
     }
   );
 
@@ -95,36 +61,6 @@ export function registerGuildTools(server: McpServer, client: Client): void {
 
       if (matches.size === 0) return `No messages matching "${query}".`;
       return matches.map(fmtMessage).join("\n---\n");
-    }
-  );
-
-  // discord_get_audit_log
-  safeTool(
-    server,
-    "discord_get_audit_log",
-    "Get recent audit log entries for a guild",
-    {
-      guild_id: z.string().describe("Guild ID"),
-      limit: z.number().min(1).max(50).default(10).describe("Number of entries (1-50)"),
-    },
-    async ({ guild_id, limit }) => {
-      checkRateLimit(guild_id, "get_audit_log");
-      const guild = await resolveGuild(client, guild_id);
-      const auditLogs = await guild.fetchAuditLogs({ limit });
-
-      if (auditLogs.entries.size === 0) return "No audit log entries.";
-
-      return auditLogs.entries
-        .map((entry) => {
-          return [
-            `Action: ${entry.action} (${entry.actionType})`,
-            `Executor: ${entry.executor?.tag ?? "unknown"}`,
-            `Target: ${entry.target?.toString() ?? "unknown"}`,
-            `Reason: ${entry.reason ?? "(none)"}`,
-            `Date: ${entry.createdAt.toISOString()}`,
-          ].join("\n");
-        })
-        .join("\n---\n");
     }
   );
 }

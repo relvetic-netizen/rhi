@@ -5,11 +5,6 @@ import type { Client } from "discord.js";
 import { registerMessageTools } from "./tools/messages.js";
 import { registerChannelTools } from "./tools/channels.js";
 import { registerGuildTools } from "./tools/guilds.js";
-import { registerUserTools } from "./tools/users.js";
-import { registerEventTools } from "./tools/events.js";
-import { registerRoleTools } from "./tools/roles.js";
-import { registerWebhookTools } from "./tools/webhooks.js";
-import { registerGeminiTools } from "./tools/gemini.js";
 import { getErrorMessage } from "../logger.js";
 
 export function createMcpServer(discordClient: Client): McpServer {
@@ -21,11 +16,6 @@ export function createMcpServer(discordClient: Client): McpServer {
   registerMessageTools(server, discordClient);
   registerChannelTools(server, discordClient);
   registerGuildTools(server, discordClient);
-  registerUserTools(server, discordClient);
-  registerEventTools(server, discordClient);
-  registerRoleTools(server, discordClient);
-  registerWebhookTools(server, discordClient);
-  registerGeminiTools(server);
 
   return server;
 }

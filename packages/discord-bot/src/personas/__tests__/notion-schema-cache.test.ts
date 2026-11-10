@@ -6,7 +6,7 @@ vi.mock("../../config.js", () => ({
     projects: "proj-id",
     invoices: "inv-id",
     tasks: "",          // empty — must be skipped
-    dailyReport: "",   // empty — must be skipped
+    events: "",        // empty — must be skipped
   },
 }));
 
@@ -67,7 +67,7 @@ describe("notion-schema-cache", () => {
     expect(schemas).toHaveProperty("projects");
     expect(schemas).toHaveProperty("invoices");
     expect(schemas).not.toHaveProperty("tasks");
-    expect(schemas).not.toHaveProperty("dailyReport");
+    expect(schemas).not.toHaveProperty("events");
   });
 
   it("uses cache on second call within TTL", async () => {

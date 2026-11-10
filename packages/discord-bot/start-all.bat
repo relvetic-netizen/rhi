@@ -22,7 +22,6 @@ echo.
 echo [RHI] Done. Discord Bot is running in background.
 echo   - Bot (Gateway): node dist/index.js
 echo   - MCP Standalone: auto-started by Claude Code
-echo   - Scheduled Tasks: managed by Windows Task Scheduler
 echo.
 echo You can close this window.
 pause
