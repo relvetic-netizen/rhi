@@ -35,7 +35,7 @@ client.rest.setToken(token);
 const mcpServer = createMcpServer(client);
 startMcpTransport(mcpServer).then(() => {
   console.error(
-    "[mcp-standalone] Discord MCP server ready (REST-only mode, 25 tools)"
+    "[mcp-standalone] Discord MCP server ready (REST-only mode, 4 tools)"
   );
 });
 

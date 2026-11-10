@@ -1,7 +1,7 @@
 # Security Policy
 
-RHI runs Claude Code as a subprocess, exposes MCP servers, and (optionally) a
-networked HTTP transport and cross-machine peer-wake. That makes its security
+RHI runs Claude Code as a subprocess, exposes MCP servers, and runs
+cross-machine peer-wake. That makes its security
 posture important. Please treat the following seriously.
 
 ## Reporting a vulnerability
@@ -30,19 +30,12 @@ These are the sharp edges. If you run RHI, understand them:
   Claude Code with `--dangerously-skip-permissions` / `bypassPermissions`.
   Only run it on machines and directories you control, and scope
   `ALLOWED_WORKING_DIRS` / persona `additionalDirs` as tightly as possible.
-- **The HTTP MCP transport is off by default** (`MCP_HTTP_ENABLE=false`) and
-  binds to loopback (`127.0.0.1`). It requires a bearer token (`MCP_API_KEY`)
-  and enforces DNS-rebinding host allow-listing and a tool denylist. Read the
-  Security Runbook in `packages/discord-bot/README.md` before binding to
-  `0.0.0.0`.
 - **Secrets live only in `.env` / local config**, never in the repo. All
   `*.example` files contain placeholders. Never commit a real token; rotate any
   token that is accidentally committed.
 - **Memory content is personal data.** The `.gitignore` blocks real memory
   trees. Do not defeat it.
-- **Untrusted input.** Discord messages, webhook payloads, and tool arguments
-  are untrusted. Tools that send outward (webhooks) restrict URLs by prefix to
-  limit SSRF.
+- **Untrusted input.** Discord messages and tool arguments are untrusted.
 
 ## Dependencies
 

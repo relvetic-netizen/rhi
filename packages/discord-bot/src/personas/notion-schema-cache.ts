@@ -19,7 +19,7 @@ export interface NotionSchema {
 
 const cache = new Map<string, NotionSchema>();
 
-/** Clear cache. Pass a schema name (e.g. "accounting") or DS id to evict a single entry;
+/** Clear cache. Pass a schema name (e.g. "tasks") or DS id to evict a single entry;
  *  call with no arg to clear all. */
 export function invalidate(target?: string): void {
   if (!target) {

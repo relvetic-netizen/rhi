@@ -1,10 +1,4 @@
-import {
-  Client,
-  PermissionFlagsBits,
-  type GuildMember,
-  type Guild,
-  type GuildBasedChannel,
-} from "discord.js";
+import { Client, type Guild, type GuildBasedChannel } from "discord.js";
 
 const MCP_ALLOWED_GUILD_IDS = process.env.MCP_ALLOWED_GUILD_IDS
   ? process.env.MCP_ALLOWED_GUILD_IDS.split(",").map((s) => s.trim())
@@ -71,27 +65,4 @@ export async function resolveChannel(
     throw new Error(`Channel ${channelId} not found in guild ${guildId}.`);
   }
   return channel;
-}
-
-/** Admin mutation tools (channel create / permission / topic) are gated by an
- *  env flag so they are off by default. Set MCP_OPERATOR_ID=<discord_user_id>
- *  to enable. This prevents prompt-injection → unauthed guild-admin chains. */
-export function isAdminMcpEnabled(): boolean {
-  return !!process.env.MCP_OPERATOR_ID;
-}
-
-export function checkBotPermission(
-  member: GuildMember,
-  permission: bigint,
-  actionName: string,
-): void {
-  if (!member.permissions.has(permission)) {
-    const permName =
-      Object.entries(PermissionFlagsBits).find(
-        ([, v]) => v === permission,
-      )?.[0] ?? String(permission);
-    throw new Error(
-      `Bot lacks permission "${permName}" required for ${actionName}.`,
-    );
-  }
 }
